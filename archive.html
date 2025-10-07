@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arsip Laporan Glazing Line</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === Mobile Warning (Ditempatkan di awal untuk prioritas) === */
+    #mobile-warning {
+      display: none; /* Default: hidden */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      text-align: center;
+      padding: 50px 20px;
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* === Gaya Umum (Sesuai Report.html) === */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7f9;
+      color: #1a2a44;
+      padding-bottom: 40px;
+    }
+    .container {
+      max-width: 1400px; /* Menyesuaikan dengan report.html */
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* === Filter (Sesuai Report.html) === */
+    .filters {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .filters label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1a2a44;
+      display: block;
+      margin: 0 5px;
+    }
+    .filters select, .filters input {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+      width: auto;
+    }
+    .filters button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+
+    /* === Tombol === */
+    .btn-filter {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-filter:hover {
+      background: #2563eb;
+    }
+    .btn-reset {
+      background: #10b981;
+      color: white;
+    }
+    .btn-reset:hover {
+      background: #059669;
+    }
+
+    /* === Tabel Arsip Ringkas === */
+    .archive-summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 14px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      table-layout: fixed;
+      box-sizing: border-box;
+    }
+    .archive-summary-table th,
+    .archive-summary-table td {
+      border: 1px solid #e0e0e0;
+      padding: 8px;
+      text-align: center;
+      vertical-align: middle;
+      word-wrap: break-word;
+    }
+    .archive-summary-table th {
+      background: #f5f7f9;
+      color: #1a2a44;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    /* Baris ringkas bisa diklik */
+    .archive-summary-table tbody tr {
+      cursor: pointer;
+    }
+    .archive-summary-table tbody tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    /* --- Atur Lebar Kolom Tabel Ringkas --- */
+    .archive-summary-table th:nth-child(1), .archive-summary-table td:nth-child(1) { width: 40%; } /* Judul */
+    .archive-summary-table th:nth-child(2), .archive-summary-table td:nth-child(2) { width: 20%; } /* Tanggal */
+    .archive-summary-table th:nth-child(3), .archive-summary-table td:nth-child(3) { width: 20%; } /* Grup */
+    .archive-summary-table th:nth-child(4), .archive-summary-table td:nth-child(4) { width: 20%; } /* Shift */
+
+
+    /* === Kartu Laporan (untuk detail yang expandable) === */
+    .report-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+      max-width: 100%;
+      display: none; /* ⭐ Sembunyikan secara default */
+    }
+    .report-card.expanded {
+      display: block; /* ⭐ Tampilkan ketika class 'expanded' ditambahkan */
+    }
+    .report-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .report-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .report-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    /* === Tabel Input & Hasil (dari report.html) === */
+    .report-table, .mini-result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 14px;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      table-layout: fixed;
+      box-sizing: border-box;
+    }
+
+    .report-table th,
+    .report-table td,
+    .mini-result-table th,
+    .mini-result-table td {
+      border: 1px solid #e0e0e0;
+      padding: 6px;
+      text-align: center;
+      vertical-align: middle;
+      word-wrap: break-word;
+    }
+
+    .report-table th,
+    .mini-result-table th {
+      background: #f5f7f9;
+      color: #1a2a44;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px;
+    }
+
+    .report-table input[type="number"] {
+      width: 100%;
+      padding: 4px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px;
+      background: #fafafa;
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+    .report-table input[type="number"]:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+    }
+
+    /* Kolom "Avg/jam" & Hasil */
+    .report-table td:nth-child(8),
+    .report-table td:nth-child(15) { /* Avg/jam 2A & 2B */
+      font-weight: bold;
+      color: #1a2a44;
+      background: #fafafa;
+      min-width: 70px;
+    }
+
+    /* --- Atur Lebar Kolom Tabel Input Secara Proporsional --- */
+    .report-table th:nth-child(1), .report-table td:nth-child(1) { 
+      width: 1.5%; 
+      font-size: 12px;
+      padding: 2px;
+    }
+    .report-table th:nth-child(2), .report-table td:nth-child(2) { width: 5.5%; } /* Water 2A */
+    .report-table th:nth-child(3), .report-table td:nth-child(3) { width: 5.5%; } /* Density 2A */
+    .report-table th:nth-child(4), .report-table td:nth-child(4) { width: 5.5%; } /* Viscosity 2A */
+    .report-table th:nth-child(5), .report-table td:nth-child(5) { width: 5.5%; } /* Luar 2A */
+    .report-table th:nth-child(6), .report-table td:nth-child(6) { width: 5.5%; } /* Tengah 2A */
+    .report-table th:nth-child(7), .report-table td:nth-child(7) { width: 5.5%; } /* Dalam 2A */
+    .report-table th:nth-child(8), .report-table td:nth-child(8) { width: 5.5%; } /* Avg/jam 2A */
+    .report-table th:nth-child(9), .report-table td:nth-child(9) { width: 5.5%; } /* Water 2B */
+    .report-table th:nth-child(10), .report-table td:nth-child(10) { width: 5.5%; } /* Density 2B */
+    .report-table th:nth-child(11), .report-table td:nth-child(11) { width: 5.5%; } /* Viscosity 2B */
+    .report-table th:nth-child(12), .report-table td:nth-child(12) { width: 5.5%; } /* Luar 2B */
+    .report-table th:nth-child(13), .report-table td:nth-child(13) { width: 5.5%; } /* Tengah 2B */
+    .report-table th:nth-child(14), .report-table td:nth-child(14) { width: 5.5%; } /* Dalam 2B */
+    .report-table th:nth-child(15), .report-table td:nth-child(15) { width: 5.5%; } /* Avg/jam 2B */
+
+    .mini-result-table td {
+      font-family: monospace;
+      font-weight: 500;
+      text-align: right;
+      padding: 8px 12px;
+    }
+
+    /* --- Atur Lebar Kolom Tabel Hasil agar selaras --- */
+    .mini-result-table th:nth-child(1), .mini-result-table td:nth-child(1) { width: 33.3%; }
+    .mini-result-table th:nth-child(2), .mini-result-table td:nth-child(2) { width: 33.3%; }
+    .mini-result-table th:nth-child(3), .mini-result-table td:nth-child(3) { width: 33.3%; }
+
+    /* === Loading === */
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* === Responsif === */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        text-align: left;
+      }
+      .archive-summary-table,
+      .report-table,
+      .mini-result-table {
+        font-size: 12px;
+      }
+      .archive-summary-table th,
+      .archive-summary-table td,
+      .report-table input[type="number"],
+      .report-table th,
+      .report-table td,
+      .mini-result-table th,
+      .mini-result-table td {
+        padding: 4px;
+      }
+      .report-table input[type="number"] {
+        width: 100%;
+        padding: 2px;
+        font-size: 12px;
+      }
+      /* Responsif: Gunakan lebar otomatis untuk mobile */
+      .archive-summary-table th:nth-child(n),
+      .archive-summary-table td:nth-child(n),
+      .report-table th:nth-child(n),
+      .report-table td:nth-child(n),
+      .mini-result-table th:nth-child(n),
+      .mini-result-table td:nth-child(n) {
+          width: auto !important;
+      }
+      .filters button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>REPORT ARCHIVE</h1>
+
+    <!-- Filter -->
+    <div class="filters">
+      <label for="filter-judul">Report Type:</label>
+      <select id="filter-judul">
+        <option value="">All</option>
+        <option value="TOP GLAZE APPLICATION REPORT">Top Glaze</option>
+        <option value="ENGOBE APPLICATION REPORT">Engobe</option>
+      </select>
+
+      <label for="filter-grup">Group:</label>
+      <select id="filter-grup">
+        <option value="">All</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+      </select>
+
+      <label for="filter-shift">Shift:</label>
+      <select id="filter-shift">
+        <option value="">All</option>
+        <option value="1">Shift 1</option>
+        <option value="2">Shift 2</option>
+      </select>
+
+      <label for="filter-start">From Date:</label>
+      <input type="date" id="filter-start" />
+
+      <label for="filter-end">To Date:</label>
+      <input type="date" id="filter-end" />
+
+      <button class="btn-filter" onclick="applyFilters()">Apply Filter</button>
+      <button class="btn-reset" onclick="loadAllReports()">Load All</button>
+    </div>
+
+    <!-- Tabel Ringkas Arsip -->
+    <div id="archive-summary-container">
+      <p class="loading">Loading Reports List From Firebase...</p>
+    </div>
+
+    <!-- Tempat untuk Kartu Detail (akan diisi oleh JS saat expand) -->
+    <div id="archive-detail-container"></div>
+  </div>
+
+  <!-- Mobile Warning -->
+  <div id="mobile-warning">
+    <p>Maaf, website ini hanya bisa diakses dalam mode desktop.</p>
+    <p>Silakan gunakan desktop/laptop atau aktifkan "Situs Desktop" pada browser Anda.</p>
+  </div>
+
+  <!-- Tombol Navigasi ke Beranda -->
+  <div style="text-align: center; margin-top: 20px; padding: 10px;">
+    <a href="./index.html" style="padding: 10px 20px; background: #6b7280; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">Back To HomePage</a>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    // === Firebase SDK ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQMIcVvAkNbbOWMZR2xq1rOPKXIMKaDb0",
+      authDomain: "gl-report-1aacc.firebaseapp.com",
+      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "gl-report-1aacc",
+      storageBucket: "gl-report-1aacc.firebasestorage.app",
+      messagingSenderId: "435417402623",
+      appId: "1:435417402623:web:b9852cd45510f1a24bd0ca",
+      measurementId: "G-HE1PCXXKYJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Helper: ambil nilai dari objek hasil
+    const getResultValue = (obj, key) => {
+      const v = obj?.[key];
+      return typeof v === 'object' ? v.value : v;
+    };
+
+    // Helper: ambil input value dari laporan
+    const getInputValue = (report, key) => report?.[key] || '-';
+
+    // === Render Tabel Ringkas Arsip (Hanya Laporan yang Diarsipkan) ===
+    function renderArchiveSummary(reports) {
+      const container = document.getElementById("archive-summary-container");
+
+      if (reports.length === 0) {
+        container.innerHTML = `<p style="text-align:center; padding: 20px; color: #ef4444;">No Reports Are Saved</p>`;
+        return;
+      }
+
+      // Urutkan berdasarkan tanggal terbaru
+      reports.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+      let html = `
+        <table class="archive-summary-table">
+          <thead>
+            <tr>
+              <th>Jenis Laporan</th>
+              <th>Tanggal</th>
+              <th>Grup</th>
+              <th>Shift</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      reports.forEach((report, index) => {
+        // Gunakan indeks sebagai ID unik sementara untuk menghubungkan baris dengan detail
+        const reportId = `report-${index}`;
+        html += `
+          <tr data-report-id="${reportId}">
+            <td>${report.judul}</td>
+            <td>${report.tanggal}</td>
+            <td>${report.grup}</td>
+            <td>${report.shift}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = html;
+
+      // Tambahkan event listener setelah tabel dibuat
+      const rows = container.querySelectorAll('tbody tr');
+      rows.forEach(row => {
+        row.addEventListener('click', () => {
+          const reportId = row.getAttribute('data-report-id');
+          toggleReportDetail(reportId, reports);
+        });
+      });
+    }
+
+    // === Toggle Tampilan Detail Laporan ===
+    function toggleReportDetail(reportId, allReports) {
+      const detailCard = document.getElementById(reportId);
+      if (detailCard) {
+        // Toggle class 'expanded'
+        detailCard.classList.toggle('expanded');
+      } else {
+        // Jika kartu detail belum ada, buat dan tambahkan
+        const reportIndex = parseInt(reportId.replace('report-', ''));
+        const report = allReports[reportIndex];
+
+        if (report) {
+          const detailContainer = document.getElementById("archive-detail-container");
+          let cardHtml = `
+            <div id="${reportId}" class="report-card expanded">
+              <div class="report-header">
+                <h3 class="report-title">${report.judul}</h3>
+                <div class="report-meta">
+                  <span>Tanggal: ${report.tanggal}</span>
+                  <span>Grup: ${report.grup}</span>
+                  <span>Shift: ${report.shift}</span>
+                </div>
+              </div>
+          `;
+
+          // --- Bangun Tabel Input ---
+          let inputTableHtml = `
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th rowspan="2">Jam</th>
+                  <th colspan="3">Line 2A</th>
+                  <th colspan="4">Weight Gram (g)</th>
+                  <th colspan="3">Line 2B</th>
+                  <th colspan="4">Weight Gram (g)</th>
+                </tr>
+                <tr>
+                  <th>Water (g)</th>
+                  <th>Density (g)</th>
+                  <th>Viscosity (s)</th>
+                  <th>Luar</th>
+                  <th>Tengah</th>
+                  <th>Dalam</th>
+                  <th>Avg/jam</th>
+                  <th>Water (g)</th>
+                  <th>Density (g)</th>
+                  <th>Viscosity (s)</th>
+                  <th>Luar</th>
+                  <th>Tengah</th>
+                  <th>Dalam</th>
+                  <th>Avg/jam</th>
+                </tr>
+              </thead>
+              <tbody>
+          `;
+
+          // Ambil jam dari shift
+          const shift = report.shift;
+          const tanggal = report.tanggal;
+          const date = new Date(tanggal);
+          let startHour = shift === '1' ? 7 : 19;
+          for (let i = 1; i <= 12; i++) {
+            const currentHour = startHour + (i - 1);
+            const displayHour = currentHour % 24; // Handle 24 -> 00
+            const hourStr = displayHour.toString().padStart(2, '0') + ".00";
+
+            const water2A = getInputValue(report, `water2A-${i}`);
+            const density2A = getInputValue(report, `density2A-${i}`);
+            const viscosity2A = getInputValue(report, `viscosity2A-${i}`);
+            const luar2A = getInputValue(report, `luar2A-${i}`);
+            const tengah2A = getInputValue(report, `tengah2A-${i}`);
+            const dalam2A = getInputValue(report, `dalam2A-${i}`);
+            const avg2A = getResultValue(report, `avg2A-${i}`) || '-';
+
+            const water2B = getInputValue(report, `water2B-${i}`);
+            const density2B = getInputValue(report, `density2B-${i}`);
+            const viscosity2B = getInputValue(report, `viscosity2B-${i}`);
+            const luar2B = getInputValue(report, `luar2B-${i}`);
+            const tengah2B = getInputValue(report, `tengah2B-${i}`);
+            const dalam2B = getInputValue(report, `dalam2B-${i}`);
+            const avg2B = getResultValue(report, `avg2B-${i}`) || '-';
+
+            inputTableHtml += `
+              <tr>
+                <td>${hourStr}</td>
+                <td><input type="number" value="${water2A}" readonly></td>
+                <td><input type="number" value="${density2A}" readonly></td>
+                <td><input type="number" value="${viscosity2A}" readonly></td>
+                <td><input type="number" value="${luar2A}" readonly></td>
+                <td><input type="number" value="${tengah2A}" readonly></td>
+                <td><input type="number" value="${dalam2A}" readonly></td>
+                <td>${avg2A}</td>
+                <td><input type="number" value="${water2B}" readonly></td>
+                <td><input type="number" value="${density2B}" readonly></td>
+                <td><input type="number" value="${viscosity2B}" readonly></td>
+                <td><input type="number" value="${luar2B}" readonly></td>
+                <td><input type="number" value="${tengah2B}" readonly></td>
+                <td><input type="number" value="${dalam2B}" readonly></td>
+                <td>${avg2B}</td>
+              </tr>
+            `;
+          }
+
+          inputTableHtml += `
+              </tbody>
+            </table>
+          `;
+
+          // Ambil hasil rata-rata untuk ditampilkan
+          const avgWater2A = getResultValue(report, 'avgWater2A') || '-';
+          const avgDensity2A = getResultValue(report, 'avgDensity2A') || '-';
+          const avgViscosity2A = getResultValue(report, 'avgViscosity2A') || '-';
+          const avgLuar2A = getResultValue(report, 'avgLuar2A') || '-';
+          const avgTengah2A = getResultValue(report, 'avgTengah2A') || '-';
+          const avgDalam2A = getResultValue(report, 'avgDalam2A') || '-';
+          const avgTotal2A = getResultValue(report, 'avgTotal2A') || '-';
+
+          const avgWater2B = getResultValue(report, 'avgWater2B') || '-';
+          const avgDensity2B = getResultValue(report, 'avgDensity2B') || '-';
+          const avgViscosity2B = getResultValue(report, 'avgViscosity2B') || '-';
+          const avgLuar2B = getResultValue(report, 'avgLuar2B') || '-';
+          const avgTengah2B = getResultValue(report, 'avgTengah2B') || '-';
+          const avgDalam2B = getResultValue(report, 'avgDalam2B') || '-';
+          const avgTotal2B = getResultValue(report, 'avgTotal2B') || '-';
+
+          cardHtml += `
+            ${inputTableHtml} <!-- Tabel input disisipkan di sini -->
+            <h4 style="margin-top: 15px;">12-HOUR AVERAGE CALCULATION RESULTS</h4>
+            <table class="mini-result-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th>Line 2A</th>
+                  <th>Line 2B</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Water (g)</td><td>${avgWater2A}</td><td>${avgWater2B}</td></tr>
+                <tr><td>Density (g)</td><td>${avgDensity2A}</td><td>${avgDensity2B}</td></tr>
+                <tr><td>Viscosity (s)</td><td>${avgViscosity2A}</td><td>${avgViscosity2B}</td></tr>
+                <tr><td>Weight Luar (g)</td><td>${avgLuar2A}</td><td>${avgLuar2B}</td></tr>
+                <tr><td>Weight Tengah (g)</td><td>${avgTengah2A}</td><td>${avgTengah2B}</td></tr>
+                <tr><td>Weight Dalam (g)</td><td>${avgDalam2A}</td><td>${avgDalam2B}</td></tr>
+                <tr><td>Total Weight (g)</td><td>${avgTotal2A}</td><td>${avgTotal2B}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          `;
+
+          detailContainer.insertAdjacentHTML('beforeend', cardHtml);
+        }
+      }
+    }
+
+    // === Fetch Data (Hanya Arsip) ===
+    async function fetchArchivedReports() {
+      // Query hanya untuk laporan yang diarsipkan
+      const q = query(collection(db, "glaze_reports"), where("isActive", "==", false)); // atau where("status", "==", "archived")
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => doc.data());
+    }
+
+    // === Fungsi Publik ===
+    window.allReports = []; // Simpan semua laporan di variabel global sementara
+
+    window.loadAllReports = async function() {
+      document.getElementById("archive-summary-container").innerHTML = '<p class="loading">Memuat data...</p>';
+      const reports = await fetchArchivedReports();
+      window.allReports = reports; // Simpan untuk diakses oleh toggleReportDetail
+      renderArchiveSummary(reports);
+    };
+
+    window.applyFilters = async function() {
+      const judul = document.getElementById("filter-judul").value;
+      const grup = document.getElementById("filter-grup").value;
+      const shift = document.getElementById("filter-shift").value;
+      const start = document.getElementById("filter-start").value;
+      const end = document.getElementById("filter-end").value;
+
+      document.getElementById("archive-summary-container").innerHTML = '<p class="loading">Menyaring data...</p>';
+      let reports = await fetchArchivedReports(); // Ambil semua arsip dulu
+
+      if (judul) reports = reports.filter(r => r.judul === judul);
+      if (grup) reports = reports.filter(r => r.grup === grup);
+      if (shift) reports = reports.filter(r => r.shift === shift);
+      if (start) reports = reports.filter(r => r.tanggal >= start);
+      if (end) reports = reports.filter(r => r.tanggal <= end);
+
+      window.allReports = reports; // Simpan hasil filter
+      renderArchiveSummary(reports);
+
+      // Kosongkan detail container saat filter diterapkan
+      document.getElementById("archive-detail-container").innerHTML = '';
+    };
+
+    // === Inisialisasi ===
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cek lebar layar saat halaman dimuat
+      if (window.innerWidth <= 768) {
+          // Jika lebar <= 768px, tampilkan warning mobile
+          document.getElementById("mobile-warning").style.display = "flex";
+          // Sembunyikan konten utama
+          document.querySelector('.container').style.display = 'none';
+          document.querySelector('.filters').style.display = 'none';
+      } else {
+          // Jika lebar > 768px (desktop), muat data normal
+          const today = new Date().toISOString().split('T')[0];
+          const weekAgo = new Date();
+          weekAgo.setDate(weekAgo.getDate() - 7);
+          document.getElementById("filter-start").value = weekAgo.toISOString().split('T')[0];
+          document.getElementById("filter-end").value = today;
+          window.loadAllReports();
+      }
+    });
+  </script>
+</body>
+</html>

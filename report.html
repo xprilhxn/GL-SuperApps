@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Application Reports</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === Gaya Umum (Sesuai Index.html) === */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7f9;
+      color: #1a2a44;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    .title-dropdown-container {
+      flex: 1;
+      min-width: 300px;
+    }
+    .header-form {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .header-form label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 600;
+      font-size: 14px;
+      color: #1a2a44;
+      align-items: flex-start;
+    }
+    #report-title-select {
+      font-size: 18px;
+      font-weight: 700;
+      border: 2px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px;
+      background: white;
+      color: #1a2a44;
+      width: 100%;
+      max-width: 400px;
+    }
+    #tanggal, #grup, #shift {
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+    }
+
+    /* === Tabel Input === */
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 14px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      overflow-x: auto; /* Scroll horizontal jika terlalu lebar */
+    }
+    .report-table th,
+    .report-table td {
+      border: 1px solid #e0e0e0;
+      padding: 6px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    .report-table th {
+      background: #f1f5f9;
+      color: #1a2a44;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px;
+    }
+    .report-table input[type="number"] {
+      width: 60px;
+      padding: 4px;
+      text-align: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 13px;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+    .report-table input[type="number"]:focus {
+      outline: none;
+      border-color: #3b82f6;
+      background: white;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+    /* Kolom Avg/jam */
+    .report-table td:nth-child(8),
+    .report-table td:nth-child(15) {
+      font-weight: bold;
+      color: #1a2a44;
+      background: #f8fafc;
+      min-width: 70px;
+    }
+
+    /* === Tabel Hasil === */
+    .results {
+      margin-top: 30px;
+    }
+    .results h2 {
+      color: #0f172a;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    #result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    #result-table th,
+    #result-table td {
+      border: 1px solid #e0e0e0;
+      padding: 10px;
+      text-align: center;
+    }
+    #result-table th {
+      background: #f1f5f9;
+      color: #1a2a44;
+      font-weight: 600;
+    }
+    #result-table td {
+      font-family: monospace;
+      font-weight: 500;
+      text-align: center;
+      padding: 10px 15px;
+      font-size: 15px;
+    }
+
+    /* === Tombol Aksi === */
+    .btn-container {
+      text-align: center;
+      margin-top: 25px;
+    }
+    .btn-container button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    #calculateBtn {
+      background: #10b981;
+      color: white;
+    }
+    #calculateBtn:hover {
+      background: #059669;
+    }
+    #saveBtn {
+      background: #3b82f6;
+      color: white;
+    }
+    #saveBtn:hover {
+      background: #2563eb;
+    }
+    #resetBtn {
+      background: #ef4444;
+      color: white;
+    }
+    #resetBtn:hover {
+      background: #dc2626;
+    }
+    #loadBtn {
+      background: #8b5cf6;
+      color: white;
+    }
+    #loadBtn:hover {
+      background: #7c3aed;
+    }
+
+    /* === Status Kelulusan === */
+    .status-lulus {
+      font-weight: bold;
+      color: #16a34a;
+    }
+    .status-lulus::after {
+      content: ' ✅';
+    }
+    .status-gagal {
+      font-weight: bold;
+      color: #dc2626;
+    }
+    .status-gagal::after {
+      content: ' ❌';
+    }
+
+    /* === Mobile Warning === */
+    #mobile-warning {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      text-align: center;
+      padding: 50px 20px;
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      #desktop-content { display: none; }
+      #mobile-warning { display: flex; }
+    }
+    /* Responsif untuk tabel */
+    @media (max-width: 1024px) {
+      .report-table {
+        font-size: 12px;
+      }
+      .report-table input[type="number"] {
+        width: 50px;
+        padding: 2px;
+        font-size: 12px;
+      }
+      .report-table th,
+      .report-table td {
+        padding: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="desktop-content">
+    <div class="container">
+      <div id="printable-area">
+        <!-- Header -->
+        <div class="main-header-container">
+          <div class="title-dropdown-container">
+            <label for="report-title-select">Report Type:</label>
+            <select id="report-title-select">
+              <option value="TOP GLAZE APPLICATION REPORT">TOP GLAZE APPLICATION REPORT</option>
+              <option value="ENGOBE APPLICATION REPORT">ENGOBE APPLICATION REPORT</option>
+            </select>
+          </div>
+          <div class="header-form">
+            <label for="tanggal">Date:
+              <input type="date" id="tanggal" />
+            </label>
+            <label for="grup">Group:
+              <select id="grup">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+              </select>
+            </label>
+            <label for="shift">Shift:
+              <select id="shift" onchange="updateShiftHours()">
+                <option value="1">Shift 1 (07:00 - 19:00)</option>
+                <option value="2">Shift 2 (19:00 - 07:00)</option>
+              </select>
+            </label>
+         
+          </div>
+        </div>
+
+        <!-- Tabel Input Per Jam -->
+        <div id="report-content">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th rowspan="2">Time</th>
+                <th colspan="3">Line 2A</th>
+                <th colspan="4">Weight Gram (g)</th>
+                <th colspan="3">Line 2B</th>
+                <th colspan="4">Weight Gram (g)</th>
+              </tr>
+              <tr>
+                <th>Water (g)</th>
+                <th>Density (g)</th>
+                <th>Viscosity (s)</th>
+                <th>Outside</th>
+                <th>Middle</th>
+                <th>Inside</th>
+                <th>Avg/Time</th>
+                <th>Water (g)</th>
+                <th>Density (g)</th>
+                <th>Viscosity (s)</th>
+                <th>Outside</th>
+                <th>Middle</th>
+                <th>Inside</th>
+                <th>Avg/Time</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
+        </div>
+
+        <!-- Hasil Rata-rata -->
+        <div class="results" id="results">
+          <h2>12-HOUR AVERAGE CALCULATION RESULTS</h2>
+          <table id="result-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Line 2A</th>
+                <th>Line 2B</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Water (g)</td><td id="avgWater2A">-</td><td id="avgWater2B">-</td></tr>
+              <tr><td>Density (g)</td><td id="avgDensity2A">-</td><td id="avgDensity2B">-</td></tr>
+              <tr><td>Viscosity (s)</td><td id="avgViscosity2A">-</td><td id="avgViscosity2B">-</td></tr>
+              <tr><td>Outside Weight (g)</td><td id="avgLuar2A">-</td><td id="avgLuar2B">-</td></tr>
+              <tr><td>Middle Weight (g)</td><td id="avgTengah2A">-</td><td id="avgTengah2B">-</td></tr>
+              <tr><td>Inside Weight (g)</td><td id="avgDalam2A">-</td><td id="avgDalam2B">-</td></tr>
+              <tr><td>Total Weight (g)</td><td id="avgTotal2A">-</td><td id="avgTotal2B">-</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="btn-container exclude-on-print">
+          <button id="calculateBtn" onclick="calculate()">CALCULATE AVERAGE</button>
+          <button id="saveBtn" onclick="saveReport()">SAVE REPORT</button>
+          <button id="resetBtn" onclick="resetData()">RESET</button>
+             <button id="loadBtn" onclick="loadActiveReport()">LOAD</button></button>
+           <!-- Tombol Navigasi ke Beranda -->
+  <div style="text-align: center; margin-top: 20px; padding: 10px;">
+    <a href="./index.html" style="padding: 10px 20px; background: #6b7280; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">Back To HomePage</a>
+  </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Warning -->
+  <div id="mobile-warning">
+    <p>Maaf, website ini hanya bisa diakses dalam mode desktop.</p>
+    <p>Silakan gunakan desktop/laptop atau aktifkan "Situs Desktop" pada browser Anda.</p>
+  </div>
+
+  <!-- Firebase SDK + Logika -->
+  <script type="module">
+    // === Firebase Modular SDK ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      getDoc,
+      query,
+      where,
+      orderBy,
+      getDocs,
+      deleteDoc,
+      serverTimestamp,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    // === Konfigurasi Firebase ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQMIcVvAkNbbOWMZR2xq1rOPKXIMKaDb0",
+      authDomain: "gl-report-1aacc.firebaseapp.com",
+      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "gl-report-1aacc",
+      storageBucket: "gl-report-1aacc.firebasestorage.app",
+      messagingSenderId: "435417402623",
+      appId: "1:435417402623:web:b9852cd45510f1a24bd0ca",
+      measurementId: "G-HE1PCXXKYJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // === Inisialisasi Tabel Jam (12 baris) - Berdasarkan Shift ===
+    function updateShiftHours() {
+      const shift = document.getElementById("shift").value;
+      const tableBody = document.getElementById("table-body");
+      tableBody.innerHTML = "";
+
+      // Tentukan jam mulai berdasarkan shift
+      let startHour = shift === '1' ? 7 : 19;
+
+      for (let i = 1; i <= 12; i++) {
+        const currentHour = startHour + (i - 1);
+        const displayHour = currentHour % 24; // Handle 24 -> 00
+        const hourStr = displayHour.toString().padStart(2, '0') + ".00";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${hourStr}</td>
+          <!-- Line 2A -->
+          <td><input type="number" id="water2A-${i}" min="0" step="any"></td>
+          <td><input type="number" id="density2A-${i}" min="0" step="any"></td>
+          <td><input type="number" id="viscosity2A-${i}" min="0" step="any"></td>
+          <td><input type="number" id="luar2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A')"></td>
+          <td><input type="number" id="tengah2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A')"></td>
+          <td><input type="number" id="dalam2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A')"></td>
+          <td id="avg2A-${i}">-</td>
+          <!-- Line 2B -->
+          <td><input type="number" id="water2B-${i}" min="0" step="any"></td>
+          <td><input type="number" id="density2B-${i}" min="0" step="any"></td>
+          <td><input type="number" id="viscosity2B-${i}" min="0" step="any"></td>
+          <td><input type="number" id="luar2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B')"></td>
+          <td><input type="number" id="tengah2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B')"></td>
+          <td><input type="number" id="dalam2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B')"></td>
+          <td id="avg2B-${i}">-</td>
+        `;
+        tableBody.appendChild(row);
+      }
+    }
+
+    // === Live Calculation ===
+    window.liveCalculate = function(rowId, line) {
+      const luar = parseFloat(document.getElementById(`luar${line}-${rowId}`).value) || 0;
+      const tengah = parseFloat(document.getElementById(`tengah${line}-${rowId}`).value) || 0;
+      const dalam = parseFloat(document.getElementById(`dalam${line}-${rowId}`).value) || 0;
+      const avgCell = document.getElementById(`avg${line}-${rowId}`);
+      if (luar > 0 || tengah > 0 || dalam > 0) {
+        const avg = (luar + tengah + dalam) / 3;
+        avgCell.textContent = avg.toFixed(2);
+      } else {
+        avgCell.textContent = "-";
+      }
+    };
+
+    // === Hitung Rata-rata 12 Jam ===
+    window.calculate = function() {
+      const btn = document.getElementById("calculateBtn");
+      const originalText = btn.textContent;
+      btn.textContent = "Menghitung...";
+      btn.disabled = true;
+
+      setTimeout(() => {
+        ["2A", "2B"].forEach(line => {
+          let totalWater = 0, totalDensity = 0, totalViscosity = 0;
+          let totalLuar = 0, totalTengah = 0, totalDalam = 0, count = 0;
+
+          for (let i = 1; i <= 12; i++) {
+            const water = parseFloat(document.getElementById(`water${line}-${i}`).value) || 0;
+            const density = parseFloat(document.getElementById(`density${line}-${i}`).value) || 0;
+            const viscosity = parseFloat(document.getElementById(`viscosity${line}-${i}`).value) || 0;
+            const luar = parseFloat(document.getElementById(`luar${line}-${i}`).value) || 0;
+            const tengah = parseFloat(document.getElementById(`tengah${line}-${i}`).value) || 0;
+            const dalam = parseFloat(document.getElementById(`dalam${line}-${i}`).value) || 0;
+
+            if (water || density || viscosity || luar || tengah || dalam) {
+              totalWater += water;
+              totalDensity += density;
+              totalViscosity += viscosity;
+              totalLuar += luar;
+              totalTengah += tengah;
+              totalDalam += dalam;
+              count++;
+            }
+          }
+
+          const setAvg = (id, value) => {
+            const el = document.getElementById(id);
+            el.textContent = count ? value.toFixed(2) : "-";
+            // class status bisa ditambahkan nanti berdasarkan standar
+          };
+
+          setAvg(`avgWater${line}`, totalWater / count);
+          setAvg(`avgDensity${line}`, totalDensity / count);
+          setAvg(`avgViscosity${line}`, totalViscosity / count);
+          setAvg(`avgLuar${line}`, totalLuar / count);
+          setAvg(`avgTengah${line}`, totalTengah / count);
+          setAvg(`avgDalam${line}`, totalDalam / count);
+          setAvg(`avgTotal${line}`, (totalLuar + totalTengah + totalDalam) / (3 * count));
+        });
+
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }, 100);
+    };
+
+    // === Reset Data ===
+    window.resetData = function() {
+      if (!confirm("Reset semua data?")) return;
+      document.getElementById("tanggal").value = "";
+      document.getElementById("grup").value = "A";
+      document.getElementById("shift").value = "1";
+      document.getElementById("report-title-select").value = "TOP GLAZE APPLICATION REPORT"; // Reset ke nilai default
+      updateShiftHours(); // Reset jam juga
+      document.querySelectorAll("#result-table td").forEach(td => td.textContent = "-");
+    };
+
+    // === Firebase: Simpan Laporan (Aktif) - Berdasarkan Judul, Grup, Shift ===
+    window.saveReport = async function() {
+      const tanggal = document.getElementById("tanggal").value;
+      const grup = document.getElementById("grup").value;
+      const shift = document.getElementById("shift").value;
+      const judul = document.getElementById("report-title-select").value; // Ambil judul
+      if (!tanggal) return alert("Tanggal harus diisi!");
+
+      window.calculate(); // Pastikan hasil terbaru
+
+      // Buat ID dokumen berdasarkan tanggal, grup, shift, dan judul
+      const docId = `report_${tanggal}_${grup}_shift${shift}_${judul.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}`;
+
+      const reportData = {
+        judul,
+        tanggal,
+        grup,
+        shift,
+        isActive: true, // Tandai sebagai aktif
+        shiftStartTimestamp: serverTimestamp(), // Waktu awal shift (akan dihitung sebelum disimpan)
+        createdAt: serverTimestamp()
+      };
+
+      // Simpan semua input fields
+      document.querySelectorAll("#table-body input").forEach(input => {
+        reportData[input.id] = input.value;
+      });
+
+      // Simpan hasil rata-rata
+      document.querySelectorAll("#result-table td[id^='avg']").forEach(cell => {
+        reportData[cell.id] = {
+          value: cell.textContent,
+          className: cell.className
+        };
+      });
+
+      try {
+        // Cek apakah laporan aktif untuk grup, shift, DAN judul ini sudah ada
+        const q = query(
+            collection(db, "glaze_reports"),
+            where("grup", "==", grup),
+            where("shift", "==", shift),
+            where("judul", "==", judul), // Tambahkan filter judul
+            where("isActive", "==", true)
+        );
+        const snapshot = await getDocs(q);
+
+        if (!snapshot.empty) {
+            // Jika sudah ada, update dokumen yang ada
+            const existingDoc = snapshot.docs[0];
+            await updateDoc(existingDoc.ref, reportData);
+            alert(`✅ Laporan aktif "${judul}" berhasil diperbarui di Firebase!`);
+        } else {
+            // Jika belum ada, simpan dokumen baru
+            // Hitung shiftStartTimestamp sebelum menyimpan
+            const date = new Date(tanggal);
+            const startHour = shift === '1' ? 7 : 19;
+            const shiftStart = new Date(date);
+            shiftStart.setHours(startHour, 0, 0, 0); // Jam menit detik milidetik
+
+            reportData.shiftStartTimestamp = shiftStart; // Gunakan timestamp lokal sebelum dikirim
+            await setDoc(doc(db, "glaze_reports", docId), reportData);
+            alert(`✅ Laporan aktif "${judul}" baru berhasil disimpan ke Firebase!`);
+        }
+      } catch (e) {
+        console.error("Firebase Error:", e);
+        alert(`❌ Gagal menyimpan ke Firebase.\n${e.message}`);
+      }
+    };
+
+    // === Firebase: Load Laporan Aktif - Berdasarkan Judul, Grup, Shift ===
+    window.loadActiveReport = async function() {
+      const grup = document.getElementById("grup").value;
+      const shift = document.getElementById("shift").value;
+      const judul = document.getElementById("report-title-select").value; // Ambil judul
+
+      try {
+        const q = query(
+            collection(db, "glaze_reports"),
+            where("grup", "==", grup),
+            where("shift", "==", shift),
+            where("judul", "==", judul), // Tambahkan filter judul
+            where("isActive", "==", true)
+        );
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          alert(`Tidak ada laporan aktif ditemukan untuk "${judul}", Grup ${grup}, Shift ${shift}.`);
+          return;
+        }
+
+        const docSnap = snapshot.docs[0];
+        const report = docSnap.data();
+        const docId = docSnap.id;
+
+        // Isi form
+        document.getElementById("report-title-select").value = report.judul;
+        document.getElementById("tanggal").value = report.tanggal;
+        document.getElementById("grup").value = report.grup;
+        document.getElementById("shift").value = report.shift;
+        updateShiftHours(); // Update jam berdasarkan shift yang dimuat
+
+        // Isi input fields
+        document.querySelectorAll("#table-body input").forEach(input => {
+          if (report[input.id] !== undefined) input.value = report[input.id];
+        });
+
+        // Isi hasil
+        document.querySelectorAll("#result-table td[id^='avg']").forEach(cell => {
+          const id = cell.id;
+          if (report[id]) {
+            cell.textContent = report[id].value;
+            cell.className = report[id].className;
+          }
+        });
+
+        // Update status jika perlu (ini hanya untuk konfirmasi UI, data utama di Firestore)
+        window.currentlyLoadedReportId = docId;
+        alert(`✅ Laporan aktif "${judul}" berhasil dimuat dari Firebase!`);
+      } catch (e) {
+        console.error("Firebase Load Error:", e);
+        alert(`❌ Gagal memuat laporan.\n${e.message}`);
+      }
+    };
+
+    // === Cek dan Nonaktifkan Laporan Expired (Tetap berdasarkan shiftStartTimestamp) ===
+    async function checkAndDeactivateExpiredReports() {
+        const now = new Date();
+        const q = query(collection(db, "glaze_reports"), where("isActive", "==", true));
+        const snapshot = await getDocs(q);
+
+        const batchPromises = [];
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            const shiftStart = data.shiftStartTimestamp.toDate ? data.shiftStartTimestamp.toDate() : new Date(data.shiftStartTimestamp);
+            const shiftDurationMs = 12 * 60 * 60 * 1000; // 12 jam dalam milidetik
+            const expiryTime = new Date(shiftStart.getTime() + shiftDurationMs);
+
+            if (now > expiryTime) {
+                // Laporan expired, nonaktifkan
+                batchPromises.push(updateDoc(docSnap.ref, { isActive: false, status: "archived", archivedAt: serverTimestamp() }));
+                console.log(`Laporan ${docSnap.id} ("${data.judul}") telah dinonaktifkan karena expired.`);
+            }
+        });
+
+        if (batchPromises.length > 0) {
+            await Promise.all(batchPromises);
+            console.log("Laporan-laporan yang expired telah dinonaktifkan.");
+        }
+    }
+
+    // === Inisialisasi ===
+    document.addEventListener("DOMContentLoaded", async () => {
+      updateShiftHours(); // Inisialisasi jam saat halaman dimuat
+      await checkAndDeactivateExpiredReports(); // Periksa laporan expired
+    });
+  </script>
+</body>
+</html>

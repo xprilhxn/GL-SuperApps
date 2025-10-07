@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GL Super Apps V1.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* === Gaya Umum === */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
+      color: #1a2a44;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      padding: 40px 30px;
+      margin: 20px 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    .intro {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #475569;
+      margin-bottom: 30px;
+    }
+
+    .start-btn {
+      padding: 14px 28px;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .start-btn:hover {
+      background: #2563eb;
+      transform: scale(1.02);
+    }
+
+    .navigation-options {
+      display: none; /* Sembunyikan secara default */
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .nav-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+
+    .nav-btn-report {
+      background: #10b981;
+      color: white;
+    }
+    .nav-btn-report:hover {
+      background: #059669;
+    }
+
+    .nav-btn-analysis {
+      background: #8b5cf6;
+      color: white;
+    }
+    .nav-btn-analysis:hover {
+      background: #7c3aed;
+    }
+
+    .nav-btn-archive {
+      background: #f59e0b;
+      color: white;
+    }
+    .nav-btn-archive:hover {
+      background: #d97706;
+    }
+
+    .footer {
+      margin-top: 30px;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>GL SUPER APPS V1.0</h1>
+    <p class="intro">
+      This is a digital platform created to record, store, and analyse GLAZE & ENGOBE report data. The platform provides an interface for real-time data input and report data analysis with an interactive, modern, and professional dashboard. It is the answer to innovation towards an environmentally friendly, practical, and accessible digital era.
+    </p>
+
+    <button class="start-btn" onclick="toggleNavigation()">Start</button>
+
+    <div class="navigation-options" id="navigationOptions">
+      <a href="./report.html" class="nav-btn nav-btn-report">📋 Create Report</a>
+      <a href="./analysis.html" class="nav-btn nav-btn-analysis">📊 Data Analysis</a>
+      <a href="./archive.html" class="nav-btn nav-btn-archive">🗄 Reports Archive</a> <!-- Baris baru -->
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 AprilhxnProject.
+  </div>
+
+  <script>
+    function toggleNavigation() {
+      const options = document.getElementById('navigationOptions');
+      options.style.display = options.style.display === 'flex' ? 'none' : 'flex';
+    }
+  </script>
+
+</body>
+</html>

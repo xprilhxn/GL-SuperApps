@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports Analysis</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* === Mobile Warning (Ditempatkan di awal untuk prioritas) === */
+       #mobile-warning {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      text-align: center;
+      padding: 50px 20px;
+      z-index: 9999;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    @media (max-width: 768px) {
+      #desktop-content { display: none; }
+      #mobile-warning { display: flex; }
+    }
+
+    /* === Gaya Umum (Sesuai Index.html) === */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7f9;
+      color: #1a2a44;
+    }
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* === Filter (Sesuai Index.html) === */
+    .filters {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+    .filters label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #1a2a44;
+    }
+    .filters select, .filters input {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+    }
+
+    /* === Tombol (Sesuai Index.html) === */
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    button {
+      background: #3b82f6;
+      color: white;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+
+    /* === Grid Grafik === */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    .chart-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    }
+    .chart-title {
+      text-align: center;
+      margin-bottom: 15px;
+      font-weight: 600;
+      color: #334155;
+      font-size: 16px;
+    }
+    canvas {
+      max-height: 300px;
+      width: 100% !important;
+    }
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    /* === Loading === */
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* === Responsif === */
+    @media (max-width: 768px) {
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reports Data Analysis Dashboard</h1>
+
+    <!-- Filter -->
+    <div class="filters">
+      <label for="filter-grup">Group:</label>
+      <select id="filter-grup">
+        <option value="">All</option>
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+      </select>
+
+      <label for="filter-shift">Shift:</label>
+      <select id="filter-shift">
+        <option value="">All</option>
+        <option value="1">Shift 1</option>
+        <option value="2">Shift 2</option>
+      </select>
+
+      <label for="filter-start">From:</label>
+      <input type="date" id="filter-start" />
+
+      <label for="filter-end">To:</label>
+      <input type="date" id="filter-end" />
+
+      <label for="param-select">Analysis Parameter:</label>
+      <select id="param-select">
+        <option value="water">Water</option>
+        <option value="density">Density</option>
+        <option value="viscosity">Viscosity</option>
+        <option value="total">Total Weight</option>
+      </select>
+
+      <button onclick="applyFilters()">Apply</button></button>
+      <button onclick="loadAllReports()">Reset</button>
+    </div>
+
+    <!-- Grafik -->
+    <div class="chart-grid" id="charts-container">
+      <div class="loading">Loading Data & Graphs...</div>
+    </div>
+  </div>
+
+  <!-- Mobile Warning -->
+  <div id="mobile-warning">
+    <p>Maaf, website ini hanya bisa diakses dalam mode desktop.</p>
+    <p>Silakan gunakan desktop/laptop atau aktifkan "Situs Desktop" pada browser Anda.</p>
+  </div>
+
+  <!-- Tombol Navigasi ke Beranda -->
+  <div style="text-align: center; margin-top: 20px; padding: 10px;">
+    <a href="./index.html" style="padding: 10px 20px; background: #6b7280; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">Back To HomePage</a>
+  </div>
+
+  <!-- Firebase + Chart.js Logic -->
+  <script type="module">
+    // === Firebase SDK ===
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQMIcVvAkNbbOWMZR2xq1rOPKXIMKaDb0",
+      authDomain: "gl-report-1aacc.firebaseapp.com",
+      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "gl-report-1aacc",
+      storageBucket: "gl-report-1aacc.firebasestorage.app",
+      messagingSenderId: "435417402623",
+      appId: "1:435417402623:web:b9852cd45510f1a24bd0ca",
+      measurementId: "G-HE1PCXXKYJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Helper: ambil nilai numerik aman
+    const numVal = (obj, key) => {
+      const v = obj?.[key];
+      const val = typeof v === 'object' ? v.value : v;
+      return val === '-' || !val ? null : parseFloat(val);
+    };
+
+    // Konfigurasi parameter
+    const PARAM_CONFIG = {
+      water: { label: "Water", key2A: "avgWater2A", key2B: "avgWater2B", unit: "g" },
+      density: { label: "Density", key2A: "avgDensity2A", key2B: "avgDensity2B", unit: "g" },
+      viscosity: { label: "Viscosity", key2A: "avgViscosity2A", key2B: "avgViscosity2B", unit: "s" },
+      total: { label: "Total Weight", key2A: "avgTotal2A", key2B: "avgTotal2B", unit: "g" }
+    };
+
+    // === Render Semua Grafik dengan Parameter yang Dipilih ===
+    function renderCharts(reports, selectedParam = "water") {
+      const container = document.getElementById("charts-container");
+      if (reports.length === 0) {
+        container.innerHTML = `<div class="full-width chart-card"><p style="text-align:center;color:#ef4444;">Tidak ada data.</p></div>`;
+        return;
+      }
+
+      reports.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+      const cfg = PARAM_CONFIG[selectedParam];
+      const dates = reports.map(r => r.tanggal);
+      const data2A = reports.map(r => numVal(r, cfg.key2A));
+      const data2B = reports.map(r => numVal(r, cfg.key2B));
+
+      // === Bar Chart: Rata-rata per Grup (untuk parameter yang dipilih) ===
+      const grupMap = { A: [], B: [], C: [] };
+      reports.forEach(r => {
+        if (grupMap[r.grup] !== undefined) {
+          const val = numVal(r, cfg.key2A);
+          if (val !== null) grupMap[r.grup].push(val);
+        }
+      });
+      const grupLabels = ['A', 'B', 'C'];
+      const avgPerGrup = grupLabels.map(g => {
+        const vals = grupMap[g];
+        return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+      });
+
+      // === Radar Chart: Profil 2A vs 2B (semua parameter, tapi highlight yang dipilih) ===
+      const allParams = ['water', 'density', 'viscosity', 'total'];
+      const radarLabels = allParams.map(p => PARAM_CONFIG[p].label);
+      const radar2A = allParams.map(p => {
+        const vals = reports.map(r => numVal(r, PARAM_CONFIG[p].key2A)).filter(v => v !== null);
+        return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+      });
+      const radar2B = allParams.map(p => {
+        const vals = reports.map(r => numVal(r, PARAM_CONFIG[p].key2B)).filter(v => v !== null);
+        return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+      });
+
+      // === Doughnut: Distribusi laporan per Grup ===
+      const grupCount = { A: 0, B: 0, C: 0 };
+      reports.forEach(r => {
+        if (grupCount[r.grup] !== undefined) grupCount[r.grup]++;
+      });
+      const doughnutData = grupLabels.map(g => grupCount[g]);
+
+      // === Render HTML ===
+      container.innerHTML = `
+        <div class="chart-card">
+          <div class="chart-title">Tren Harian: ${cfg.label} (${cfg.unit})</div>
+          <canvas id="lineChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Rata-rata ${cfg.label} per Grup</div>
+          <canvas id="barChart"></canvas>
+        </div>
+        <div class="chart-card full-width">
+          <div class="chart-title">Profil Kinerja: Line 2A vs Line 2B (Semua Parameter)</div>
+          <canvas id="radarChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Distribusi Laporan per Grup</div>
+          <canvas id="doughnutChart"></canvas>
+        </div>
+      `;
+
+      // Line Chart
+      new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+         {
+          labels: dates,
+          datasets: [
+            { label: `${cfg.label} 2A`,  data2A, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3, fill: true },
+            { label: `${cfg.label} 2B`,  data2B, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.1)', tension: 0.3, fill: true }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top' } }
+        }
+      });
+
+      // Bar Chart
+      new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+         {
+          labels: grupLabels,
+          datasets: [{
+            label: `Rata-rata ${cfg.label}`,
+             avgPerGrup,
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top' } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      // Radar Chart
+      new Chart(document.getElementById('radarChart'), {
+        type: 'radar',
+         {
+          labels: radarLabels,
+          datasets: [
+            { label: 'Line 2A',  radar2A, fill: true, backgroundColor: 'rgba(59,130,246,0.2)', borderColor: '#3b82f6', pointBackgroundColor: '#3b82f6' },
+            { label: 'Line 2B',  radar2B, fill: true, backgroundColor: 'rgba(16,185,129,0.2)', borderColor: '#10b981', pointBackgroundColor: '#10b981' }
+          ]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      });
+
+      // Doughnut Chart
+      new Chart(document.getElementById('doughnutChart'), {
+        type: 'doughnut',
+         {
+          labels: grupLabels,
+          datasets: [{
+             doughnutData,
+            backgroundColor: ['#3b82f6', '#10b981', '#f59e0b']
+          }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+    }
+
+    // === Fetch Data ===
+    async function fetchAllReports() {
+      const snapshot = await getDocs(collection(db, "glaze_reports"));
+      return snapshot.docs.map(doc => doc.data());
+    }
+
+    // === Fungsi Publik ===
+    window.loadAllReports = async function() {
+      document.getElementById("charts-container").innerHTML = '<div class="full-width chart-card"><p class="loading">Memuat data...</p></div>';
+      const reports = await fetchAllReports();
+      const param = document.getElementById("param-select").value;
+      renderCharts(reports, param);
+    };
+
+    window.applyFilters = async function() {
+      const grup = document.getElementById("filter-grup").value;
+      const shift = document.getElementById("filter-shift").value;
+      const start = document.getElementById("filter-start").value;
+      const end = document.getElementById("filter-end").value;
+      const param = document.getElementById("param-select").value;
+
+      document.getElementById("charts-container").innerHTML = '<div class="full-width chart-card"><p class="loading">Menyaring data...</p></div>';
+      let reports = await fetchAllReports();
+
+      if (grup) reports = reports.filter(r => r.grup === grup);
+      if (shift) reports = reports.filter(r => r.shift === shift);
+      if (start) reports = reports.filter(r => r.tanggal >= start);
+      if (end) reports = reports.filter(r => r.tanggal <= end);
+
+      renderCharts(reports, param);
+    };
+
+    // === Inisialisasi ===
+    document.addEventListener("DOMContentLoaded", () => {
+      // Cek lebar layar saat halaman dimuat
+      if (window.innerWidth <= 768) {
+          // Jika lebar <= 768px, tampilkan warning mobile
+          document.getElementById("mobile-warning").style.display = "flex";
+          // Sembunyikan konten utama
+          document.querySelector('.container').style.display = 'none';
+          document.querySelector('button').style.display = 'none'; // Sembunyikan tombol filter
+          document.querySelector('.filters').style.display = 'none';
+      } else {
+          // Jika lebar > 768px (desktop), muat data normal
+          const today = new Date().toISOString().split('T')[0];
+          const twoWeeksAgo = new Date();
+          twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+          document.getElementById("filter-start").value = twoWeeksAgo.toISOString().split('T')[0];
+          document.getElementById("filter-end").value = today;
+          window.loadAllReports();
+      }
+    });
+  </script>
+</body>
+</html>
