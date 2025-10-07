@@ -371,7 +371,7 @@
   <!-- Firebase SDK + Logika -->
   <script type="module">
     // === Firebase Modular SDK ===
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js ";
     import {
       getFirestore,
       collection,
@@ -385,13 +385,13 @@
       deleteDoc,
       serverTimestamp,
       updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js ";
 
     // === Konfigurasi Firebase ===
     const firebaseConfig = {
       apiKey: "AIzaSyAQMIcVvAkNbbOWMZR2xq1rOPKXIMKaDb0",
       authDomain: "gl-report-1aacc.firebaseapp.com",
-      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app",
+      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app ",
       projectId: "gl-report-1aacc",
       storageBucket: "gl-report-1aacc.firebasestorage.app",
       messagingSenderId: "435417402623",
@@ -453,6 +453,36 @@
         avgCell.textContent = "-";
       }
     };
+
+    // === Fungsi Baru: Kalkulasi Ulang Semua Avg/jam ===
+    function recalculateAllAvgs() {
+      for (let i = 1; i <= 12; i++) {
+        // Hitung Avg/jam untuk Line 2A
+        const luar2A = parseFloat(document.getElementById(`luar2A-${i}`).value) || 0;
+        const tengah2A = parseFloat(document.getElementById(`tengah2A-${i}`).value) || 0;
+        const dalam2A = parseFloat(document.getElementById(`dalam2A-${i}`).value) || 0;
+        const avgCell2A = document.getElementById(`avg2A-${i}`);
+        if (luar2A > 0 || tengah2A > 0 || dalam2A > 0) {
+          const avg2A = (luar2A + tengah2A + dalam2A) / 3;
+          avgCell2A.textContent = avg2A.toFixed(2);
+        } else {
+          avgCell2A.textContent = "-";
+        }
+
+        // Hitung Avg/jam untuk Line 2B
+        const luar2B = parseFloat(document.getElementById(`luar2B-${i}`).value) || 0;
+        const tengah2B = parseFloat(document.getElementById(`tengah2B-${i}`).value) || 0;
+        const dalam2B = parseFloat(document.getElementById(`dalam2B-${i}`).value) || 0;
+        const avgCell2B = document.getElementById(`avg2B-${i}`);
+        if (luar2B > 0 || tengah2B > 0 || dalam2B > 0) {
+          const avg2B = (luar2B + tengah2B + dalam2B) / 3;
+          avgCell2B.textContent = avg2B.toFixed(2);
+        } else {
+          avgCell2B.textContent = "-";
+        }
+      }
+    }
+
 
     // === Hitung Rata-rata 12 Jam ===
     window.calculate = function() {
@@ -634,6 +664,10 @@
 
         // Update status jika perlu (ini hanya untuk konfirmasi UI, data utama di Firestore)
         window.currentlyLoadedReportId = docId;
+
+        // *** PERUBAHAN: Panggil fungsi baru setelah memuat data ***
+        recalculateAllAvgs(); // <-- Ini memicu kalkulasi ulang Avg/jam
+
         alert(`✅ Laporan aktif "${judul}" berhasil dimuat dari Firebase!`);
       } catch (e) {
         console.error("Firebase Load Error:", e);
