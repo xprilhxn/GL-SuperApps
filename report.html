@@ -4,22 +4,29 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Application Reports</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com " />
+  <link rel="preconnect" href="https://fonts.gstatic.com " crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* === Gaya Umum (Sesuai Index.html) === */
+    /* === Gaya Umum (Diselaraskan dengan Index.html) === */
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: #f5f7f9;
+      /* === PERUBAHAN 1: Selaraskan latar belakang === */
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
       color: #1a2a44;
     }
+
     .container {
       max-width: 1400px;
       margin: 0 auto;
       padding: 20px;
+      /* === PERUBAHAN 2: Selaraskan gaya kontainer === */
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     }
+
     .main-header-container {
       display: flex;
       justify-content: space-between;
@@ -28,16 +35,19 @@
       flex-wrap: wrap;
       gap: 15px;
     }
+
     .title-dropdown-container {
       flex: 1;
       min-width: 300px;
     }
+
     .header-form {
       display: flex;
       gap: 15px;
       align-items: center;
       flex-wrap: wrap;
     }
+
     .header-form label {
       display: flex;
       flex-direction: column;
@@ -46,10 +56,12 @@
       color: #1a2a44;
       align-items: flex-start;
     }
+
     #report-title-select {
       font-size: 18px;
       font-weight: 700;
       border: 2px solid #cbd5e1;
+      /* === PERUBAHAN: Tambahkan border-radius === */
       border-radius: 8px;
       padding: 8px;
       background: white;
@@ -57,9 +69,11 @@
       width: 100%;
       max-width: 400px;
     }
+
     #tanggal, #grup, #shift {
       padding: 8px;
       border: 1px solid #cbd5e1;
+      /* === PERUBAHAN: Tambahkan border-radius === */
       border-radius: 6px;
       font-size: 14px;
       background: white;
@@ -72,9 +86,12 @@
       margin-bottom: 20px;
       font-size: 14px;
       background: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      overflow-x: auto; /* Scroll horizontal jika terlalu lebar */
+      /* === PERUBAHAN: Perhalus box-shadow & border-radius === */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      overflow: hidden; /* Untuk membuat border-radius bekerja pada tabel */
     }
+
     .report-table th,
     .report-table td {
       border: 1px solid #e0e0e0;
@@ -82,6 +99,7 @@
       text-align: center;
       vertical-align: middle;
     }
+
     .report-table th {
       background: #f1f5f9;
       color: #1a2a44;
@@ -89,22 +107,27 @@
       font-size: 13px;
       padding: 8px;
     }
+
     .report-table input[type="number"] {
       width: 60px;
       padding: 4px;
       text-align: center;
       border: 1px solid #cbd5e1;
+      /* === PERUBAHAN: Tambahkan border-radius & transisi === */
       border-radius: 4px;
       font-size: 13px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       background: #fafafa;
     }
+
     .report-table input[type="number"]:focus {
       outline: none;
       border-color: #3b82f6;
       background: white;
-      box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+      /* === PERUBAHAN: Tambahkan box-shadow saat focus === */
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
     }
+
     /* Kolom Avg/jam */
     .report-table td:nth-child(8),
     .report-table td:nth-child(15) {
@@ -118,29 +141,37 @@
     .results {
       margin-top: 30px;
     }
+
     .results h2 {
       color: #0f172a;
       text-align: center;
       margin-bottom: 15px;
     }
+
     #result-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
       background: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      /* === PERUBAHAN: Perhalus box-shadow & border-radius === */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      overflow: hidden;
     }
+
     #result-table th,
     #result-table td {
       border: 1px solid #e0e0e0;
       padding: 10px;
       text-align: center;
     }
+
     #result-table th {
       background: #f1f5f9;
       color: #1a2a44;
       font-weight: 600;
     }
+
     #result-table td {
       font-family: monospace;
       font-weight: 500;
@@ -149,48 +180,194 @@
       font-size: 15px;
     }
 
-    /* === Tombol Aksi === */
+    /* === Tombol Aksi (Diselaraskan dengan Index.html) === */
     .btn-container {
       text-align: center;
       margin-top: 25px;
     }
+
     .btn-container button {
       padding: 10px 20px;
       margin: 5px;
       font-weight: 600;
       border: none;
+      /* === PERUBAHAN: Tambahkan border-radius === */
       border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
-      transition: background 0.2s;
+      /* === PERUBAHAN: Tambahkan transisi & transform === */
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
     }
+
     #calculateBtn {
       background: #10b981;
       color: white;
+      /* === PERUBAHAN: Tambahkan box-shadow === */
+      box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
     }
+
     #calculateBtn:hover {
       background: #059669;
+      /* === PERUBAHAN: Tambahkan efek hover === */
+      transform: scale(1.02);
+      box-shadow: 0 6px 8px rgba(16, 185, 129, 0.3);
     }
+
     #saveBtn {
       background: #3b82f6;
       color: white;
+      /* === PERUBAHAN: Tambahkan box-shadow === */
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
     }
+
     #saveBtn:hover {
       background: #2563eb;
+      /* === PERUBAHAN: Tambahkan efek hover === */
+      transform: scale(1.02);
+      box-shadow: 0 6px 8px rgba(59, 130, 246, 0.3);
     }
+
+    #archiveFinalBtn { /* Gaya untuk tombol baru */
+      background: #f59e0b; /* Warna oranye */
+      color: white;
+      /* === PERUBAHAN: Tambahkan box-shadow === */
+      box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+    }
+
+    #archiveFinalBtn:hover {
+      background: #d97706; /* Warna oranye lebih gelap saat hover */
+      /* === PERUBAHAN: Tambahkan efek hover === */
+      transform: scale(1.02);
+      box-shadow: 0 6px 8px rgba(245, 158, 11, 0.3);
+    }
+
     #resetBtn {
       background: #ef4444;
       color: white;
+      /* === PERUBAHAN: Tambahkan box-shadow === */
+      box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
     }
+
     #resetBtn:hover {
       background: #dc2626;
+      /* === PERUBAHAN: Tambahkan efek hover === */
+      transform: scale(1.02);
+      box-shadow: 0 6px 8px rgba(239, 68, 68, 0.3);
     }
+
     #loadBtn {
       background: #8b5cf6;
       color: white;
+      /* === PERUBAHAN: Tambahkan box-shadow === */
+      box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
     }
+
     #loadBtn:hover {
       background: #7c3aed;
+      /* === PERUBAHAN: Tambahkan efek hover === */
+      transform: scale(1.02);
+      box-shadow: 0 6px 8px rgba(139, 92, 246, 0.3);
+    }
+
+    /* === Bagian Standar Parameter (Diperbarui) === */
+    .standards-section {
+      display: none; /* Kontrol visibilitas dari JS */
+      margin-top: 30px;
+      padding: 20px;
+      background: #f1f5f9; /* Latar belakang lembut */
+      border-radius: 12px; /* Border radius konsisten */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05); /* Bayangan halus */
+    }
+    .standards-section h3 {
+        color: #0f172a;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .standards-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 15px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .standards-table th,
+    .standards-table td {
+        border: 1px solid #e0e0e0;
+        padding: 10px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .standards-table th {
+        background: #f1f5f9;
+        color: #1a2a44;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 8px;
+    }
+    .standards-table input[type="number"] {
+        width: 80px;
+        padding: 6px;
+        text-align: center;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        font-size: 13px;
+        transition: border-color 0.2s;
+        background: #fafafa;
+    }
+    .standards-table input[type="number"]:focus {
+        outline: none;
+        border-color: #3b82f6;
+        background: white;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+
+    /* Tombol Simpan Standar */
+    .btn-save-standards {
+        padding: 10px 20px;
+        background: #f59e0b; /* Warna oranye untuk aksen */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);
+    }
+    .btn-save-standards:hover {
+        background: #d97706;
+        transform: scale(1.02);
+        box-shadow: 0 6px 8px rgba(245, 158, 11, 0.3);
+    }
+
+    /* === Tombol Navigasi ke Beranda (Diperbaiki) === */
+    .back-home-container {
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+    }
+
+    .back-home-btn {
+        padding: 10px 20px;
+        background: #6b7280;
+        color: white;
+        text-decoration: none;
+        /* === PERUBAHAN: Gaya tombol seragam === */
+        border-radius: 8px;
+        font-weight: 600;
+        display: inline-block;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 6px rgba(107, 114, 128, 0.2);
+    }
+
+    .back-home-btn:hover {
+        background: #4b5563;
+        transform: scale(1.02);
+        box-shadow: 0 6px 8px rgba(107, 114, 128, 0.3);
     }
 
     /* === Status Kelulusan === */
@@ -255,6 +432,103 @@
       .report-table td {
         padding: 4px;
       }
+      .standards-table input[type="number"] {
+          width: 60px;
+          padding: 4px;
+          font-size: 12px;
+      }
+      .standards-table th,
+      .standards-table td {
+          padding: 6px;
+      }
+    }
+
+    /* === Popup Panduan === */
+    #guide-popup {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5); /* Latar belakang gelap transparan */
+        z-index: 10000; /* Letakkan di atas semua elemen */
+        justify-content: center;
+        align-items: center;
+    }
+    .guide-content {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        max-width: 600px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+    .guide-content h2 {
+        color: #0f172a;
+        margin-top: 0;
+    }
+    .guide-content ul {
+        padding-left: 20px;
+    }
+    .guide-content li {
+        margin-bottom: 8px;
+    }
+    .guide-buttons {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .guide-buttons button {
+        margin: 0 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    #close-guide-btn {
+        background-color: #3b82f6;
+        color: white;
+    }
+    #close-guide-btn:hover {
+        background-color: #2563eb;
+    }
+    #understand-btn {
+        background-color: #10b981;
+        color: white;
+    }
+    #understand-btn:hover {
+        background-color: #059669;
+    }
+
+    /* === Tombol Panduan === */
+    .guide-button-container {
+        text-align: center;
+        margin-top: 15px; /* Sesuaikan jarak dari elemen sebelumnya */
+        padding: 5px; /* Sesuaikan padding jika perlu */
+    }
+
+    .guide-btn {
+        padding: 8px 16px; /* Sesuaikan padding */
+        background: #dc2626; /* Gunakan warna netral atau sesuai tema */
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        border: none; /* Hapus border default */
+        cursor: pointer; /* Tambahkan kursor pointer */
+        display: inline-block;
+        transition: background 0.2s, transform 0.2s, box-shadow 0.2s; /* Tambahkan transisi */
+        box-shadow: 0 4px 6px rgba(107, 114, 128, 0.2); /* Tambahkan bayangan */
+    }
+
+    .guide-btn:hover {
+        background: #dc2626; /* Warna saat hover */
+        transform: scale(1.02); /* Efek hover */
+        box-shadow: 0 6px 8px rgba(107, 114, 128, 0.3); /* Bayangan saat hover */
     }
   </style>
 </head>
@@ -288,7 +562,6 @@
                 <option value="2">Shift 2 (19:00 - 07:00)</option>
               </select>
             </label>
-         
           </div>
         </div>
 
@@ -339,24 +612,104 @@
               <tr><td>Water (g)</td><td id="avgWater2A">-</td><td id="avgWater2B">-</td></tr>
               <tr><td>Density (g)</td><td id="avgDensity2A">-</td><td id="avgDensity2B">-</td></tr>
               <tr><td>Viscosity (s)</td><td id="avgViscosity2A">-</td><td id="avgViscosity2B">-</td></tr>
-              <tr><td>Outside Weight (g)</td><td id="avgLuar2A">-</td><td id="avgLuar2B">-</td></tr>
-              <tr><td>Middle Weight (g)</td><td id="avgTengah2A">-</td><td id="avgTengah2B">-</td></tr>
-              <tr><td>Inside Weight (g)</td><td id="avgDalam2A">-</td><td id="avgDalam2B">-</td></tr>
+              <tr><td>Outside (g)</td><td id="avgLuar2A">-</td><td id="avgLuar2B">-</td></tr>
+              <tr><td>Middle (g)</td><td id="avgTengah2A">-</td><td id="avgTengah2B">-</td></tr>
+              <tr><td>Inside (g)</td><td id="avgDalam2A">-</td><td id="avgDalam2B">-</td></tr>
               <tr><td>Total Weight (g)</td><td id="avgTotal2A">-</td><td id="avgTotal2B">-</td></tr>
             </tbody>
           </table>
+        </div>
+
+        <!-- Bagian Parameter Standard -->
+        <div class="standards-section" id="standardsSection">
+          <h3>SET STANDAR PARAMETER</h3>
+          <table class="standards-table">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Line</th>
+                <th>LSL</th>
+                <th>USL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Line 2A -->
+              <tr>
+                <td>Water (g)</td>
+                <td>2A</td>
+                <td><input type="number" id="lslWater2A" step="any"></td>
+                <td><input type="number" id="uslWater2A" step="any"></td>
+              </tr>
+              <tr>
+                <td>Density (g)</td>
+                <td>2A</td>
+                <td><input type="number" id="lslDensity2A" step="any"></td>
+                <td><input type="number" id="uslDensity2A" step="any"></td>
+              </tr>
+              <tr>
+                <td>Viscosity (s)</td>
+                <td>2A</td>
+                <td><input type="number" id="lslViscosity2A" step="any"></td>
+                <td><input type="number" id="uslViscosity2A" step="any"></td>
+              </tr>
+              <tr>
+                <td>Weight Gram (g)</td> <!-- Diubah sesuai instruksi -->
+                <td>2A</td>
+                <td><input type="number" id="lslWeight2A" step="any"></td> <!-- Diubah -->
+                <td><input type="number" id="uslWeight2A" step="any"></td> <!-- Diubah -->
+              </tr>
+              <!-- Line 2B -->
+              <tr>
+                <td>Water (g)</td>
+                <td>2B</td>
+                <td><input type="number" id="lslWater2B" step="any"></td>
+                <td><input type="number" id="uslWater2B" step="any"></td>
+              </tr>
+              <tr>
+                <td>Density (g)</td>
+                <td>2B</td>
+                <td><input type="number" id="lslDensity2B" step="any"></td>
+                <td><input type="number" id="uslDensity2B" step="any"></td>
+              </tr>
+              <tr>
+                <td>Viscosity (s)</td>
+                <td>2B</td>
+                <td><input type="number" id="lslViscosity2B" step="any"></td>
+                <td><input type="number" id="uslViscosity2B" step="any"></td>
+              </tr>
+              <tr>
+                <td>Weight Gram (g)</td> <!-- Diubah sesuai instruksi -->
+                <td>2B</td>
+                <td><input type="number" id="lslWeight2B" step="any"></td> <!-- Diubah -->
+                <td><input type="number" id="uslWeight2B" step="any"></td> <!-- Diubah -->
+              </tr>
+            </tbody>
+          </table>
+          <!-- Tombol Simpan Standar -->
+          <div style="text-align: center; margin-top: 15px;">
+            <button id="saveStandardsBtn" onclick="saveStandards()" class="btn-save-standards">SAVE STANDARDS</button>
+          </div>
         </div>
 
         <!-- Tombol Aksi -->
         <div class="btn-container exclude-on-print">
           <button id="calculateBtn" onclick="calculate()">CALCULATE AVERAGE</button>
           <button id="saveBtn" onclick="saveReport()">SAVE REPORT</button>
+          <button id="archiveFinalBtn" onclick="archiveFinalReport()">SAVE TO DATABASE</button> <!-- Tombol Baru -->
           <button id="resetBtn" onclick="resetData()">RESET</button>
-             <button id="loadBtn" onclick="loadActiveReport()">LOAD</button></button>
-           <!-- Tombol Navigasi ke Beranda -->
-  <div style="text-align: center; margin-top: 20px; padding: 10px;">
-    <a href="./index.html" style="padding: 10px 20px; background: #6b7280; color: white; text-decoration: none; border-radius: 6px; font-weight: 600;">Back To HomePage</a>
-  </div>
+          <button id="loadBtn" onclick="loadActiveReport()">LOAD</button>
+          <!-- Tombol Toggle Standar -->
+          <button id="toggleStandardsBtn" onclick="toggleStandards()" style="background: #10b981; color: white; box-shadow: 0 4px 6px rgba(107, 114, 128, 0.2);">SET STANDARDS</button>
+        </div>
+
+        <!-- Tombol Panduan -->
+        <div class="guide-button-container">
+            <button id="show-guide-btn" class="guide-btn">? GUIDE</button>
+        </div>
+
+        <!-- Tombol Navigasi ke Beranda -->
+        <div class="back-home-container">
+          <a href="./index.html" class="back-home-btn">BACK TO HOMEPAGE</a>
         </div>
       </div>
     </div>
@@ -368,10 +721,35 @@
     <p>Silakan gunakan desktop/laptop atau aktifkan "Situs Desktop" pada browser Anda.</p>
   </div>
 
+  <!-- Popup Panduan -->
+  <div id="guide-popup">
+      <div class="guide-content">
+          <h2>📚 Panduan Pengisian Laporan</h2>
+          <p>Ikuti langkah-langkah berikut untuk mengisi laporan dengan benar:</p>
+          <ul>
+              <li><strong>Pilih Jenis Laporan:</strong> Gunakan dropdown "Report Type" untuk memilih antara "TOP GLAZE APPLICATION REPORT" atau "ENGOBE APPLICATION REPORT".</li>
+              <li><strong>Isi Header:</strong> Masukkan <em>Tanggal</em>, pilih <em>Grup</em>, dan <em>Shift</em>. Pemilihan Shift akan mengatur jam yang ditampilkan di tabel.</li>
+              <li><strong>Input Data Per Jam:</strong> Masukkan data untuk setiap parameter (Water, Density, Viscosity, Outside, Middle, Inside) untuk Line 2A dan 2B pada setiap baris jam.</li>
+              <li><strong>Kalkulasi Rata-rata:</strong> Klik tombol "CALCULATE AVERAGE" untuk menghitung nilai rata-rata 12 jam dan menampilkannya di tabel bawah.</li>
+              <li><strong>Simpan Draft:</strong> Gunakan tombol "SAVE REPORT" untuk menyimpan data saat ini sebagai laporan <em>aktif</em> di Database. Data juga disimpan secara lokal di browser Anda.</li>
+              <li><strong>Muat Draft:</strong> Gunakan tombol "LOAD" untuk memuat kembali laporan aktif terakhir untuk Grup, Shift, dan Jenis Laporan yang dipilih.</li>
+              <li><strong>Finalisasi dan Arsipkan:</strong> Setelah semua data lengkap, gunakan tombol "SAVE TO DATABASE". Ini akan memvalidasi data, menyimpannya langsung ke Database Arsip sebagai laporan <em>diarsipkan</em>, dan mereset form.</li>
+              <li><strong>Reset Form:</strong> Gunakan tombol "RESET" untuk membersihkan semua data yang dimasukkan.</li>
+              <li><strong>Atur Standar:</strong> Klik "Set Standards" untuk menampilkan dan mengatur parameter standar, lalu simpan menggunakan tombol "Save Standards".</li>
+              <li><strong>NOTES:</strong>
+                  <strong>Aplikasi ini masih dalam tahap BETA TEST, mohon kerja samanya jika menemukan BUG pada fungsi yang membuat aplikasi tidak bekerja dengan baik. Terimakasih </strong></li>
+          </ul>
+          <div class="guide-buttons">
+              <button id="close-guide-btn">Tutup Panduan</button>
+              <button id="understand-btn">Mengerti</button>
+          </div>
+      </div>
+  </div>
+
   <!-- Firebase SDK + Logika -->
   <script type="module">
     // === Firebase Modular SDK ===
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js ";
+    import { initializeApp } from " https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js ";
     import {
       getFirestore,
       collection,
@@ -402,6 +780,67 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // === Helper: Simpan data ke localStorage ===
+    function saveToLocalStorage() {
+        const dataToSave = {
+            tanggal: document.getElementById("tanggal").value,
+            grup: document.getElementById("grup").value,
+            shift: document.getElementById("shift").value,
+            judul: document.getElementById("report-title-select").value,
+            inputs: {},
+            results: {}
+        };
+
+        // Simpan input tabel
+        document.querySelectorAll("#table-body input").forEach(input => {
+            dataToSave.inputs[input.id] = input.value;
+        });
+
+        // Simpan hasil rata-rata
+        document.querySelectorAll("#result-table td[id^='avg']").forEach(cell => {
+            dataToSave.results[cell.id] = {
+                value: cell.textContent,
+                className: cell.className
+            };
+        });
+
+        localStorage.setItem('glazeReportDraft', JSON.stringify(dataToSave));
+        console.log("Data disimpan ke localStorage.");
+    }
+
+    // === Helper: Muat data dari localStorage ===
+    function loadFromLocalStorage() {
+        const savedData = localStorage.getItem('glazeReportDraft');
+        if (savedData) {
+            try {
+                const data = JSON.parse(savedData);
+                document.getElementById("tanggal").value = data.tanggal || "";
+                document.getElementById("grup").value = data.grup || "A";
+                document.getElementById("shift").value = data.shift || "1";
+                document.getElementById("report-title-select").value = data.judul || "TOP GLAZE APPLICATION REPORT";
+                updateShiftHours(); // Pastikan tabel sesuai shift
+
+                // Muat input tabel
+                Object.keys(data.inputs).forEach(id => {
+                    const inputElement = document.getElementById(id);
+                    if (inputElement) inputElement.value = data.inputs[id];
+                });
+
+                // Muat hasil rata-rata
+                Object.keys(data.results).forEach(id => {
+                    const cellElement = document.getElementById(id);
+                    if (cellElement) {
+                        cellElement.textContent = data.results[id].value;
+                        cellElement.className = data.results[id].className;
+                    }
+                });
+                console.log("Data dimuat dari localStorage.");
+            } catch (e) {
+                console.error("Gagal memuat data dari localStorage:", e);
+            }
+        }
+    }
+
     // === Inisialisasi Tabel Jam (12 baris) - Berdasarkan Shift ===
     function updateShiftHours() {
       const shift = document.getElementById("shift").value;
@@ -420,24 +859,26 @@
         row.innerHTML = `
           <td>${hourStr}</td>
           <!-- Line 2A -->
-          <td><input type="number" id="water2A-${i}" min="0" step="any"></td>
-          <td><input type="number" id="density2A-${i}" min="0" step="any"></td>
-          <td><input type="number" id="viscosity2A-${i}" min="0" step="any"></td>
-          <td><input type="number" id="luar2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A')"></td>
-          <td><input type="number" id="tengah2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A')"></td>
-          <td><input type="number" id="dalam2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A')"></td>
+          <td><input type="number" id="water2A-${i}" min="0" step="any" onchange="saveToLocalStorage()"></td>
+          <td><input type="number" id="density2A-${i}" min="0" step="any" onchange="saveToLocalStorage()"></td>
+          <td><input type="number" id="viscosity2A-${i}" min="0" step="any" onchange="saveToLocalStorage()"></td>
+          <td><input type="number" id="luar2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A'); saveToLocalStorage();"></td>
+          <td><input type="number" id="tengah2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A'); saveToLocalStorage();"></td>
+          <td><input type="number" id="dalam2A-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2A'); saveToLocalStorage();"></td>
           <td id="avg2A-${i}">-</td>
           <!-- Line 2B -->
-          <td><input type="number" id="water2B-${i}" min="0" step="any"></td>
-          <td><input type="number" id="density2B-${i}" min="0" step="any"></td>
-          <td><input type="number" id="viscosity2B-${i}" min="0" step="any"></td>
-          <td><input type="number" id="luar2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B')"></td>
-          <td><input type="number" id="tengah2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B')"></td>
-          <td><input type="number" id="dalam2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B')"></td>
+          <td><input type="number" id="water2B-${i}" min="0" step="any" onchange="saveToLocalStorage()"></td>
+          <td><input type="number" id="density2B-${i}" min="0" step="any" onchange="saveToLocalStorage()"></td>
+          <td><input type="number" id="viscosity2B-${i}" min="0" step="any" onchange="saveToLocalStorage()"></td>
+          <td><input type="number" id="luar2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B'); saveToLocalStorage();"></td>
+          <td><input type="number" id="tengah2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B'); saveToLocalStorage();"></td>
+          <td><input type="number" id="dalam2B-${i}" min="0" step="any" oninput="liveCalculate(${i}, '2B'); saveToLocalStorage();"></td>
           <td id="avg2B-${i}">-</td>
         `;
         tableBody.appendChild(row);
       }
+      // Muat kembali data dari localStorage setelah tabel dibuat
+      loadFromLocalStorage();
     }
 
     // === Live Calculation ===
@@ -482,7 +923,6 @@
         }
       }
     }
-
 
     // === Hitung Rata-rata 12 Jam ===
     window.calculate = function() {
@@ -532,6 +972,7 @@
 
         btn.textContent = originalText;
         btn.disabled = false;
+        saveToLocalStorage(); // Simpan hasil kalkulasi ke localStorage
       }, 100);
     };
 
@@ -544,9 +985,44 @@
       document.getElementById("report-title-select").value = "TOP GLAZE APPLICATION REPORT"; // Reset ke nilai default
       updateShiftHours(); // Reset jam juga
       document.querySelectorAll("#result-table td").forEach(td => td.textContent = "-");
+      localStorage.removeItem('glazeReportDraft'); // Hapus draft dari localStorage
+      console.log("Data direset dan localStorage dibersihkan.");
     };
 
-    // === Firebase: Simpan Laporan (Aktif) - Berdasarkan Judul, Grup, Shift ===
+    // === Toggle Tampilan Standar Parameter ===
+    window.toggleStandards = function() {
+      const section = document.getElementById("standardsSection");
+      section.style.display = section.style.display === "block" ? "none" : "block";
+    };
+
+// === Simpan Standar ke Local Storage ===
+window.saveStandards = function() {
+  const standards = {};
+  // Ambil semua input di dalam .standards-table
+  document.querySelectorAll(".standards-table input").forEach(input => {
+    standards[input.id] = input.value;
+  });
+  localStorage.setItem("glazeStandards", JSON.stringify(standards));
+  alert("✅ Standar berhasil disimpan!");
+
+  // Tambahkan baris ini untuk menutup panel setelah menyimpan
+  document.getElementById("standardsSection").style.display = "none";
+};
+    
+
+    // === Muat Standar dari Local Storage ===
+    window.loadStandards = function() {
+      const data = localStorage.getItem("glazeStandards");
+      if (data) {
+        const standards = JSON.parse(data);
+        for (const id in standards) {
+          const el = document.getElementById(id);
+          if (el) el.value = standards[id];
+        }
+      }
+    };
+
+    // === Firebase: Simpan Laporan (Aktif) - Berdasarkan Judul, Grup, Shift - dari localStorage ===
     window.saveReport = async function() {
       const tanggal = document.getElementById("tanggal").value;
       const grup = document.getElementById("grup").value;
@@ -554,33 +1030,24 @@
       const judul = document.getElementById("report-title-select").value; // Ambil judul
       if (!tanggal) return alert("Tanggal harus diisi!");
 
-      window.calculate(); // Pastikan hasil terbaru
+      // Ambil data terbaru dari localStorage untuk disimpan ke Firebase
+      const dataToSave = JSON.parse(localStorage.getItem('glazeReportDraft') || "{}");
+      if (!dataToSave.tanggal) return alert("Tidak ada data untuk disimpan.");
 
       // Buat ID dokumen berdasarkan tanggal, grup, shift, dan judul
       const docId = `report_${tanggal}_${grup}_shift${shift}_${judul.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}`;
 
       const reportData = {
-        judul,
-        tanggal,
-        grup,
-        shift,
+        judul: dataToSave.judul,
+        tanggal: dataToSave.tanggal,
+        grup: dataToSave.grup,
+        shift: dataToSave.shift,
         isActive: true, // Tandai sebagai aktif
-        shiftStartTimestamp: serverTimestamp(), // Waktu awal shift (akan dihitung sebelum disimpan)
         createdAt: serverTimestamp()
       };
 
-      // Simpan semua input fields
-      document.querySelectorAll("#table-body input").forEach(input => {
-        reportData[input.id] = input.value;
-      });
-
-      // Simpan hasil rata-rata
-      document.querySelectorAll("#result-table td[id^='avg']").forEach(cell => {
-        reportData[cell.id] = {
-          value: cell.textContent,
-          className: cell.className
-        };
-      });
+      // Gabungkan data input dan hasil dari localStorage
+      Object.assign(reportData, dataToSave.inputs, dataToSave.results);
 
       try {
         // Cek apakah laporan aktif untuk grup, shift, DAN judul ini sudah ada
@@ -595,9 +1062,15 @@
 
         if (!snapshot.empty) {
             // Jika sudah ada, update dokumen yang ada
+            // PENTING: JANGAN UPDATE shiftStartTimestamp untuk menjaga masa aktif tetap 12 jam dari awal
             const existingDoc = snapshot.docs[0];
+            const existingData = existingDoc.data();
+
+            // Hapus shiftStartTimestamp dari data yang akan diupdate untuk menghindari overwrite
+            delete reportData.shiftStartTimestamp;
+
             await updateDoc(existingDoc.ref, reportData);
-            alert(`✅ Laporan aktif "${judul}" berhasil diperbarui di Firebase!`);
+            alert(`✅ Laporan aktif "${judul}" berhasil diperbarui di Firebase dari data lokal!`);
         } else {
             // Jika belum ada, simpan dokumen baru
             // Hitung shiftStartTimestamp sebelum menyimpan
@@ -608,7 +1081,7 @@
 
             reportData.shiftStartTimestamp = shiftStart; // Gunakan timestamp lokal sebelum dikirim
             await setDoc(doc(db, "glaze_reports", docId), reportData);
-            alert(`✅ Laporan aktif "${judul}" baru berhasil disimpan ke Firebase!`);
+            alert(`✅ Laporan aktif "${judul}" baru berhasil disimpan ke Firebase dari data lokal!`);
         }
       } catch (e) {
         console.error("Firebase Error:", e);
@@ -616,7 +1089,7 @@
       }
     };
 
-    // === Firebase: Load Laporan Aktif - Berdasarkan Judul, Grup, Shift ===
+    // === Firebase: Load Laporan Aktif - Berdasarkan Judul, Grup, Shift - ke localStorage ===
     window.loadActiveReport = async function() {
       const grup = document.getElementById("grup").value;
       const shift = document.getElementById("shift").value;
@@ -641,38 +1114,134 @@
         const report = docSnap.data();
         const docId = docSnap.id;
 
-        // Isi form
-        document.getElementById("report-title-select").value = report.judul;
-        document.getElementById("tanggal").value = report.tanggal;
-        document.getElementById("grup").value = report.grup;
-        document.getElementById("shift").value = report.shift;
-        updateShiftHours(); // Update jam berdasarkan shift yang dimuat
+        // Simpan data dari Firebase ke localStorage untuk digunakan
+        const dataToLoad = {
+            judul: report.judul,
+            tanggal: report.tanggal,
+            grup: report.grup,
+            shift: report.shift,
+            inputs: {},
+            results: {}
+        };
 
-        // Isi input fields
-        document.querySelectorAll("#table-body input").forEach(input => {
-          if (report[input.id] !== undefined) input.value = report[input.id];
+        // Pisahkan data input dan hasil berdasarkan ID
+        Object.keys(report).forEach(key => {
+            if (key.startsWith('water') || key.startsWith('density') || key.startsWith('viscosity') || key.startsWith('luar') || key.startsWith('tengah') || key.startsWith('dalam')) {
+                dataToLoad.inputs[key] = report[key];
+            } else if (key.startsWith('avg')) {
+                dataToLoad.results[key] = report[key];
+            }
         });
 
-        // Isi hasil
-        document.querySelectorAll("#result-table td[id^='avg']").forEach(cell => {
-          const id = cell.id;
-          if (report[id]) {
-            cell.textContent = report[id].value;
-            cell.className = report[id].className;
-          }
-        });
+        localStorage.setItem('glazeReportDraft', JSON.stringify(dataToLoad));
+        console.log("Data dari Firebase dimuat ke localStorage.");
+
+        // Muat data dari localStorage ke UI
+        loadFromLocalStorage();
 
         // Update status jika perlu (ini hanya untuk konfirmasi UI, data utama di Firestore)
         window.currentlyLoadedReportId = docId;
 
         // *** PERUBAHAN: Panggil fungsi baru setelah memuat data ***
-        recalculateAllAvgs(); // <-- Ini memicu kalkulasi ulang Avg/jam
+        recalculateAllAvgs(); // <-- Ini memicu kalkulasi ulang Avg/jam dari data yang dimuat
 
-        alert(`✅ Laporan aktif "${judul}" berhasil dimuat dari Firebase!`);
+        alert(`✅ Laporan aktif "${judul}" berhasil dimuat dari Firebase ke lokal!`);
       } catch (e) {
         console.error("Firebase Load Error:", e);
-        alert(`❌ Gagal memuat laporan.\n${e.message}`);
+        alert(`❌ Gagal memuat laporan dari Firebase.\n${e.message}`);
+        // Jika gagal dari Firebase, coba muat dari localStorage saja
+        loadFromLocalStorage();
+        alert("Memuat data dari lokal (localStorage)...");
       }
+    };
+
+    // === Firebase: Simpan Laporan Final (Diarsipkan Langsung) - dari localStorage ===
+    window.archiveFinalReport = async function() {
+        // 1. Validasi: Periksa apakah semua input wajib diisi
+        let allFilled = true;
+        let emptyCount = 0;
+
+        // Ambil data dari localStorage untuk validasi
+        const savedData = JSON.parse(localStorage.getItem('glazeReportDraft') || "{}");
+        if (!savedData.tanggal) {
+            alert("Tidak ada data lokal untuk diarsipkan.");
+            return;
+        }
+
+        for (let i = 1; i <= 12; i++) {
+            for (const line of ['2A', '2B']) {
+                for (const param of ['water', 'density', 'viscosity', 'luar', 'tengah', 'dalam']) {
+                    const inputId = `${param}${line}-${i}`;
+                    if (!savedData.inputs[inputId] || !savedData.inputs[inputId].trim()) {
+                        allFilled = false;
+                        emptyCount++;
+                    }
+                }
+            }
+            if (!allFilled) break;
+        }
+
+        if (!allFilled) {
+            alert(`❌ Laporan belum lengkap. Masih ada ${emptyCount} kolom yang kosong.`);
+            return;
+        }
+
+        // 2. Konfirmasi
+        if (!confirm("Semua data sudah lengkap. Arsipkan laporan ini sekarang?")) {
+            return;
+        }
+
+        // Ambil data dari localStorage
+        const dataToArchive = JSON.parse(localStorage.getItem('glazeReportDraft') || "{}");
+        if (!dataToArchive.tanggal) {
+            alert("Tidak ada data lokal untuk diarsipkan.");
+            return;
+        }
+
+        const tanggal = dataToArchive.tanggal;
+        const grup = dataToArchive.grup;
+        const shift = dataToArchive.shift;
+        const judul = dataToArchive.judul;
+
+        // Buat ID dokumen
+        const timestamp = new Date().getTime();
+        const docId = `archived_${timestamp}_${tanggal}_${grup}_shift${shift}_${judul.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}`;
+
+        const reportData = {
+            judul: dataToArchive.judul,
+            tanggal: dataToArchive.tanggal,
+            grup: dataToArchive.grup,
+            shift: dataToArchive.shift,
+            isActive: false, // <-- Tandai sebagai tidak aktif (diarsipkan)
+            status: "archived", // <-- Tandai status sebagai diarsipkan
+            archivedAt: serverTimestamp(), // <-- Tambahkan waktu arsip
+            createdAt: serverTimestamp() // <-- Tambahkan waktu pembuatan
+        };
+
+        // Gabungkan data input dan hasil dari localStorage
+        Object.assign(reportData, dataToArchive.inputs, dataToArchive.results);
+
+        try {
+            // Hitung shiftStartTimestamp sebelum menyimpan
+            const date = new Date(tanggal);
+            const startHour = shift === '1' ? 7 : 19;
+            const shiftStart = new Date(date);
+            shiftStart.setHours(startHour, 0, 0, 0);
+
+            reportData.shiftStartTimestamp = shiftStart; // Gunakan timestamp lokal sebelum dikirim
+
+            // Simpan dokumen baru ke koleksi glaze_reports
+            await setDoc(doc(db, "glaze_reports", docId), reportData);
+
+            alert(`✅ Laporan "${judul}" berhasil diarsipkan dari data lokal!`);
+
+            // 3. Reset Form dan hapus draft lokal
+            resetData(); // Gunakan fungsi resetData yang sudah ada
+
+        } catch (e) {
+            console.error("Firebase Archive Error:", e);
+            alert(`❌ Gagal mengarsipkan ke Firebase.\n${e.message}`);
+        }
     };
 
     // === Cek dan Nonaktifkan Laporan Expired (Tetap berdasarkan shiftStartTimestamp) ===
@@ -701,10 +1270,34 @@
         }
     }
 
+    // === Popup Panduan ===
+    function showGuidePopup() {
+        document.getElementById('guide-popup').style.display = 'flex';
+    }
+
+    function closeGuidePopup() {
+        document.getElementById('guide-popup').style.display = 'none';
+    }
+
     // === Inisialisasi ===
     document.addEventListener("DOMContentLoaded", async () => {
       updateShiftHours(); // Inisialisasi jam saat halaman dimuat
       await checkAndDeactivateExpiredReports(); // Periksa laporan expired
+      loadStandards(); // Muat standar saat halaman dimuat
+
+      // Hapus atau komentari Popup Guiden otomatis
+      // const hasSeenGuide = localStorage.getItem('hasSeenArchiveGuide');
+      // if (!hasSeenGuide) {
+      //   showGuidePopup(); // Tampilkan popup panduan
+      //   localStorage.setItem('hasSeenArchiveGuide', 'true'); // Set flag bahwa pengguna sudah melihat
+      // }
+
+      // Tambahkan event listener untuk tombol popup
+      document.getElementById('close-guide-btn').addEventListener('click', closeGuidePopup);
+      document.getElementById('understand-btn').addEventListener('click', closeGuidePopup);
+
+      // Tambahkan event listener untuk tombol panduan baru
+      document.getElementById('show-guide-btn').addEventListener('click', showGuidePopup);
     });
   </script>
 </body>
