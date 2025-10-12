@@ -749,7 +749,7 @@
   <!-- Firebase SDK + Logika -->
   <script type="module">
     // === Firebase Modular SDK ===
-    import { initializeApp } from " https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js ";
+    import { initializeApp } from " https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js  ";
     import {
       getFirestore,
       collection,
@@ -763,13 +763,13 @@
       deleteDoc,
       serverTimestamp,
       updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js ";
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js  ";
 
     // === Konfigurasi Firebase ===
     const firebaseConfig = {
       apiKey: "AIzaSyAQMIcVvAkNbbOWMZR2xq1rOPKXIMKaDb0",
       authDomain: "gl-report-1aacc.firebaseapp.com",
-      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app ",
+      databaseURL: "https://gl-report-1aacc-default-rtdb.asia-southeast1.firebasedatabase.app  ",
       projectId: "gl-report-1aacc",
       storageBucket: "gl-report-1aacc.firebasestorage.app",
       messagingSenderId: "435417402623",
@@ -995,20 +995,19 @@
       section.style.display = section.style.display === "block" ? "none" : "block";
     };
 
-// === Simpan Standar ke Local Storage ===
-window.saveStandards = function() {
-  const standards = {};
-  // Ambil semua input di dalam .standards-table
-  document.querySelectorAll(".standards-table input").forEach(input => {
-    standards[input.id] = input.value;
-  });
-  localStorage.setItem("glazeStandards", JSON.stringify(standards));
-  alert("✅ Standar berhasil disimpan!");
+    // === Simpan Standar ke Local Storage ===
+    window.saveStandards = function() {
+      const standards = {};
+      // Ambil semua input di dalam .standards-table
+      document.querySelectorAll(".standards-table input").forEach(input => {
+        standards[input.id] = input.value;
+      });
+      localStorage.setItem("glazeStandards", JSON.stringify(standards));
+      alert("✅ Standar berhasil disimpan!");
 
-  // Tambahkan baris ini untuk menutup panel setelah menyimpan
-  document.getElementById("standardsSection").style.display = "none";
-};
-    
+      // Tambahkan baris ini untuk menutup panel setelah menyimpan
+      document.getElementById("standardsSection").style.display = "none";
+    };
 
     // === Muat Standar dari Local Storage ===
     window.loadStandards = function() {
@@ -1285,12 +1284,9 @@ window.saveStandards = function() {
       await checkAndDeactivateExpiredReports(); // Periksa laporan expired
       loadStandards(); // Muat standar saat halaman dimuat
 
-      // Hapus atau komentari Popup Guiden otomatis
-      // const hasSeenGuide = localStorage.getItem('hasSeenArchiveGuide');
-      // if (!hasSeenGuide) {
-      //   showGuidePopup(); // Tampilkan popup panduan
-      //   localStorage.setItem('hasSeenArchiveGuide', 'true'); // Set flag bahwa pengguna sudah melihat
-      // }
+      // --- PERBAIKAN UTAMA: Tambahkan Event Listener untuk Dropdown Shift ---
+      document.getElementById("shift").addEventListener("change", updateShiftHours);
+      // --- AKHIR PERBAIKAN UTAMA ---
 
       // Tambahkan event listener untuk tombol popup
       document.getElementById('close-guide-btn').addEventListener('click', closeGuidePopup);
